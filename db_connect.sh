@@ -1,4 +1,5 @@
 #!/bin/bash
+# testingmodifiy
 # USAGE: db_connect.sh <dbname> <dbhome>
 databasename=$1
 dbnm=`echo $databasename | tr A-Z a-z`

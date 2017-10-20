@@ -1,0 +1,186 @@
+ps -ef |grep grid
+crsctl check cluster -all
+crsctl query crs activeversion
+crsctl query crs softwareversion
+ls -lrt /u01/app
+cat /etc/oracle/olr.loc
+grep 12.1 /etc/init.d/init.ohasd
+grep 12.1 /etc/init.d/ohasd
+grep 11.2 /etc/init.d/init.ohasd
+grep 11.2 /etc/init.d/ohasd
+ocrcheck
+crsctl query css votedisk
+crsctl stat res -t -w "(TYPE = ora.database.type) and (STATE_DETAILS != Open)"
+crsctl stat res -t -w "(TYPE = ora.listener.type) and  (STATE = OFFLINE)"
+crsctl stat res -t | grep -B2 -i offline  | grep db|sort -n
+
+crsctl stat res ora.panfp.db -p
+crsctl stat res -t -w "(TYPE = ora.database.type) and (STATE_DETAILS = Open)"
+=============  LISTENER =================================
+srvctl status listener |grep running
+
+Usage: srvctl status listener [-listener <lsnr_name>] [-node <node_name>] [-verbose]
+    -listener <lsnr_name>          Listener name
+    -node <node_name>              Node name
+    -verbose                       Verbose output
+    -help                          Print usage
+
+eg.  srvctl status listener -listener LISTENER_DG_PTKFF -node slcc31client07 -verbose
+
+srvctl config listener
+
+srvctl enable listener -l <listener_name> -n hostname     
+
+srvctl start listener -l <listener_name> -n hostname  
+
+srvctl getenv database -d ap2aw8f -t TNS_ADMIN
+  
+script in aufsn4x0mcdc02.oracleoutsourcing.com
+/fsnadmin/aia/hkp/ZDT/enable_listener.sh
+
+==============================================================
+GIUPGPRE-206
+
+/u01/app/11.2.0.4/grid_fadbbp160811/bin/crsctl stat res -w "TYPE =ora.database.type" -p  | egrep '^NAME|\/u01\/app\/oracle\/product\/11.2.0.3\/dbhome_1$'
+
+
+====================db start/stop =================================
+
+srvctl status database -d peocdb
+
+srvctl status instance -d <dbname> -i <inst1_name>,<inst2_name>
+
+srvctl disable instance -d <dbname> -i <instancename>    				>>>>>>>   to disable an instance
+				
+srvctl stop database -d peocdb                         				>>>  to stop all the instances of this DB
+				
+srvctl stop instance -d <dbname> -i <instance_name>      				>>>>   to stop a named instance.
+				
+srvctl start database -d peocdb                      				>>>>  to start all the ENABLED instances of a database
+
+
+srvctl status database -d <dbname>
+srvctl start instance -i <instancename> -d <dbname>						>>>>>>>>  to start specified instaces 
+srvctl start instance -d <dbname> -i <inst1_name>,<inst2_name>   		>>>>>>>>  to start specified instaces 
+srvctl start instance -d <databasename> -n <nodename>					>>>>>>>>  to start specified instaces 
+
+
+srvctl config database -d <databasename>                  				>>>>>>  to display the details of the DB
+
+Database unique name: adm5cdba
+Database name: adm5cdba
+Oracle home: /u01/app/oracle/product/12.1.0.2/dbhome_1
+Oracle user: oracle
+Spfile: +DATA/adm5cdba/spfileadm5cdba.ora
+Password file: +DATA/ADM5CDBA/PASSWORD/pwdadm5cdba.274.935661593
+Domain: 
+Start options: open
+Stop options: immediate
+Database role: PRIMARY
+Management policy: AUTOMATIC
+Server pools: 
+Disk Groups: DATA
+Mount point paths: 
+Services: 
+Type: RAC
+Start concurrency: 
+Stop concurrency: 
+OSDBA group: dba
+OSOPER group: dba
+Database instances: adm5cdba1,adm5cdba2
+Configured nodes: slcc31client05,slcc31client06
+Database is administrator managed
+
+===========================================================================
+
+You can check if it is online resizable with:
+# tune2fs -l /dev/VGExaDb/LVDbOra1 | grep feature
+(2:22:59 PM) jesper.sondergaard@oracle.com: The feature list should include "resize_inode"
+(2:23:05 PM) vidya.vishweshwaraiah: ok
+(2:23:21 PM) jesper.sondergaard@oracle.com: Them the file system can be resized without downtime (assuming sufficient space is available in the VG)
+(2:23:34 PM) jesper.sondergaard@oracle.com: You can check freespace from eg. the "vgs" command
+
+
+==============================================================================
+PRVG-11050 : No matching interfaces "ib5" for subnet "10.196.1.0" on nodes "cfcldx0031"
+
+[root@cfcldx0031 ~]# ibstat
+CA 'mlx4_0'
+        CA type: MT4099
+        Number of ports: 2
+        Firmware version: 2.11.1280
+        Hardware version: 0
+        Node GUID: 0x0010e000015a6860
+        System image GUID: 0x0010e000015a6863
+        Port 1:
+                State: Active
+                Physical state: LinkUp
+                Rate: 40
+                Base lid: 43
+                LMC: 0
+                SM lid: 1
+                Capability mask: 0x02514868
+                Port GUID: 0x0010e000015a6861
+                Link layer: IB
+        Port 2:
+                State: Down
+                Physical state: Disabled
+                Rate: 10
+                Base lid: 0
+                LMC: 0
+                SM lid: 0
+                Capability mask: 0x02514868
+                Port GUID: 0x0010e000015a6862
+                Link layer: IB
+
+[root@cfclgxibsw047 ~]# listlinkup |grep -i down
+Connector  8B Present <-> Switch Port 32 is down (Enabled)
+[root@cfclgxibsw047 ~]#
+
+[root@cfclgxibsw048 ~]# listlinkup |grep -i down
+Connector 13A Present <-> Switch Port 09 is down (AutomaticBadSpeedOrWidth)
+Connector  8B Present <-> Switch Port 32 is down (Enabled)
+
+==================================================
+
+[root@aufsn4x0mczdt01 logs]# pwd
+/fsnadmin/clm_current/logs
+
+This is how I see how many are running
+[root@aufsn4x0mczdt01 logs]# ls -l /fsnadmin/clm_current/logs/*/ot/*.running|wc -l
+9
+[root@aufsn4x0mczdt01 logs]# ls -l /fsnadmin/clm_current/logs/*/ot/*.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:33 ./1488090796889/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:33 ./1488090801582/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:33 ./1488090802583/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:34 ./1488090875739/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:34 ./1488090878549/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:34 ./1488090880811/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:34 ./1488090887766/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:34 ./1488090895552/ot/request.running
+-rw-rw-rw- 1 mc_admin mc_admin 78 Feb 26 06:35 ./1488090956445/ot/request.running
+
+-- run command every 2 minutes:
+
+while true; do ls -l /fsnadmin/clm_current/logs/*/ot/*.running |wc -l; sleep 50; done
+ 
+======================================================
+
+Additional checks which can be incorporated:
+
+1.. Tns entries for all instances
+2.  WLS issues.. how to precheck on this?
+3.  How to provide removal of banner notification confirmations
+
+
+chmod
+    4 stands for "read",
+    2 stands for "write",
+    1 stands for "execute", and
+    0 stands for "no permission."
+
+	
+	eedy-test:  dvowner/dzfrmh6tsbancjp
+	EEDY-TEST:ap2awrf:sgcldx0067.sgdc1.oraclecloud.com:1854:gsi:oracle:ap2awrf1:rel11:n
+EEDY-TEST:ap2awri:sgcldx0067.sgdc1.oraclecloud.com:1855:gsi:oracle:ap2awri1:rel11:n
+EEDY-TEST:ap2awrp:sgcldx0067.sgdc1.oraclecloud.com:1856:gsi:oracle:ap2awrp1:rel11:n
